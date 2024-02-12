@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Login Register App</title>
+	<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WeatherApp</title>
+    <script src="https://cdn.jsdelivr.net/npm/ol@v8.2.0/dist/ol.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v8.2.0/ol.css">
+    <link rel="stylesheet" href="styles.css">
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="./css/main.css" />
+  </head>
+
+  <body class="bg-sky-200">
+    <nav class="bg-gray-800 p-4">
+        <div class="flex items-center justify-between flex-wrap">
+            <div class="flex items-center flex-shrink-0 text-white mr-6">
+                <span class="font-semibold text-xl tracking-tight">WeatherApp</span>
+            </div>
+            <div class="block lg:hidden">
+                <button id="nav-toggle" class="flex items-center px-3 py-2 border rounded text-gray-200 border-gray-400 hover:text-white hover:border-white">
+                    <svg class="fill-current h-3 w-3" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><title>Menu</title><path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z"/></svg>
+                </button>
+            </div>
+            <div class="w-full block flex-grow lg:flex lg:items-center lg:w-auto hidden" id="nav-content">
+                <div class="text-sm lg:flex-grow">
+                    <a href="http://localhost:3000/" class="block mt-4 lg:inline-block lg:mt-0 text-gray-200 hover:text-white mr-4">
+                        Home
+                    </a>
+                    <a href="http://localhost:3000/signup" class="block mt-4 lg:inline-block lg:mt-0 text-gray-200 hover:text-white mr-4">
+                        Signup
+                    </a>
+                    <a href="http://localhost:3000/Login" class="block mt-4 lg:inline-block lg:mt-0 text-gray-200 hover:text-white">
+                        Login
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <h3 id="city-label"></h3> 
+    <div class="bg-emerald-500 input-container mb-4">
+        <input type="text" id="city-select">
+        <button class="bg-gradient-to-r from-green-500 to-blue-500 hover:from-yellow-500 hover:to-blue-500 py-2 px-4 rounded shadow-lg hover:shadow-cyan-800 cursor-pointer text-lg" onclick="weatherCity()">Get Weather!</button>
+    </div>
+    <br>
+    <br>
+    <div id="map" style="height: 300px;"></div>
+    <br>
+    <div class="bg-sky-400 weather-container">
+        <table class="bg-yellow-200">
+            <tr class="bg-cyan-100">
+                <td id="weather-pressure-label">Pressure</td> 
+                <td id="weather-pressure">no data</td>
+            </tr>
+            <tr class="bg-cyan-200">
+                <td id="weather-temp-label">Temperature</td> 
+                <td id="weather-temp">no data</td>
+            </tr>
+            <tr class="bg-cyan-300">
+                <td>Feels like</td>
+                <td id="weather-feels">no data</td>
+            </tr>
+            <tr class="bg-cyan-500">
+                <td>Wind speed</td>
+                <td id="weather-wspeed">no data</td>
+            </tr>
+            <tr class="bg-cyan-600">
+                <td>Country code</td>
+                <td id="weather-code">no data</td>
+            </tr>
+            <tr class="bg-cyan-700">
+                <td>Humidity</td>
+                <td id="weather-humidity">no data</td>
+            </tr>
+        </table>
+    </div>
+    <br class="bg-teal-500">
+    <hr>
+    <h3>Input BTC wallet (Example: bc1qtzrgc6sq5c3hgktlg7dk38ytgdm8fnjhnj9khl)</h3>
+    <div class="bg-amber-300 input-container mt-8">
+        <input type="text" id="wallet-select">
+        <button class="bg-gradient-to-r from-pink-500 to-blue-500 hover:from-pink-500 hover:to-yellow-500 py-2 px-4 rounded shadow-lg hover:shadow-cyan-800 cursor-pointer text-lg" onclick="checkBTCWallet()">check it!</button>
+    </div>
+    <br>
+    <br>
+    <div class="bg-amber-100 wallet-container">
+        <table>
+            <tr class="bg-amber-400">
+                <td>Total received(SAT)</td>
+                <td id="wallet-recv">no data</td>
+            </tr>
+            <tr class="bg-amber-500">
+                <td>Total sent(SAT)</td>
+                <td id="wallet-sent">no data</td>
+            </tr>
+            <tr class="bg-amber-600">
+                <td>Balance(SAT)</td>
+                <td id="wallet-bal">no data</td>
+            </tr>
+        </table>
+    </div>
+    <hr>
+    <div class="bg-yellow-800 button-container">
+        <button onclick="knowBTC()">Know current BTC price in USD</button>
+    </div>
+    <br>
+    <hr>
+    <h3>Murat Alibek SE-2207</h3>
+    <select id="language-select" onchange="changeLanguage()">
+        <option value="en">English</option>
+        <option value="ru">Русский</option>
+        <option value="kk">Қазақша</option>
+    </select>
+<script>
+const map = new ol.Map({
+    target: 'map',
+    layers: [
+        new ol.layer.Tile({
+        source: new ol.source.OSM(),
+        }),
+    ],
+    view: new ol.View({
+        center: [0, 0],
+        zoom: 2,
+    }),
+});
+
+function knowBTC(){
+    fetch('/BTC/price')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            alert(`BTC price in USD at current moment: ${data.USD}`)
+        })
+        .catch(error => {
+            console.error('There has been a problem with your fetch operation:', error);
+            alert('Failed to fetch BTC price data');
+    });
+}
+
+function checkBTCWallet(){
+    const balanceInput = document.getElementById("wallet-select");
+    if(typeof balanceInput === "undefined" || !balanceInput.value){
+        alert("No address provided");
+        return;
+    }
+
+    const balanceAddress = balanceInput.value;
+    fetch(`/wallet/${balanceAddress}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            document.getElementById("wallet-recv").innerHTML = data.total_received;
+            document.getElementById("wallet-sent").innerHTML = data.total_sent;
+            document.getElementById("wallet-bal").innerHTML = data.balance;
+        })
+        .catch(error => {
+            console.error('There has been a problem with your fetch operation:', error);
+            alert('Failed to fetch balance data');
+        });
+}
+
+function weatherCity(){
+    const cityInput = document.getElementById("city-select");
+    if(typeof cityInput === "undefined" || !cityInput.value){
+        alert("Invalid city name provided");
+        return;
+    }
+
+    const cityName = cityInput.value;
+    fetch(`/weather/${cityName}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            setCenter(data.coord.lat, data.coord.lon);
+            document.getElementById("weather-pressure").innerHTML = data.main.pressure;
+            document.getElementById("weather-temp").innerHTML = data.main.temp + "C";
+            document.getElementById("weather-feels").innerHTML = data.main.feels_like;
+            document.getElementById("weather-humidity").innerHTML = data.main.humidity;
+            document.getElementById("weather-wspeed").innerHTML = data.wind.speed + "m/s";
+            document.getElementById("weather-code").innerHTML = data.sys.country;
+        })
+        .catch(error => {
+            console.error('There has been a problem with your fetch operation:', error);
+            alert('Failed to fetch weather data');
+        });
+
+}
+
+function setCenter(latitude, longitude, zoom = 9) {
+        var view = map.getView();
+        var olCenter = ol.proj.fromLonLat([longitude, latitude]);
+        view.setCenter(olCenter);
+        view.setZoom(zoom);
+}
+document.addEventListener('DOMContentLoaded', function() {
+    updateLanguage();
+});
+
+document.getElementById("weather-pressure-label").innerText = getLocalizedString("Pressure");
+document.getElementById("weather-temp-label").innerText = getLocalizedString("Temperature");
+let currentLanguage = 'en'; 
+
+function changeLanguage() {
+    currentLanguage = document.getElementById("language-select").value;
+    updateLanguage();
+}
+
+function updateLanguage() {
+    document.getElementById("city-label").innerText = getLocalizedString("Select city");
+    document.getElementById("weather-pressure-label").innerText = getLocalizedString("Pressure"); 
+    document.getElementById("weather-temp-label").innerText = getLocalizedString("Temperature"); 
+}
+
+function getLocalizedString(key) {
+    switch (currentLanguage) {
+        case 'ru':
+            switch (key) {
+                case 'Select city':
+                    return 'Выберите город';
+                case 'Pressure': 
+                    return 'Давление';
+                case 'Temperature':
+                    return 'Температура';
+            }
+            break;
+        case 'kk':
+            switch (key) {
+                case 'Select city':
+                    return 'Қаланы таңдаңыз';
+                case 'Pressure': 
+                    return 'Атмосфера тынысқы';
+                case 'Temperature': 
+                    return 'Температура';
+                
+            }
+            break;
+        
+    }
+    return key; 
+}
+
+
+updateLanguage();
+
+</script>
+</html>

@@ -1,0 +1,70 @@
+body {
+    background-color: #e7f6ff; 
+    font-family: Arial, sans-serif; 
+}
+
+.form-card {
+    background-color: #fff;
+    border-radius: 20px; 
+    margin-top: 100px; 
+    padding: 40px;
+    box-shadow: 0px 15px 25px rgba(0, 0, 0, 0.3); 
+}
+
+.form-card p {
+    margin-top: 0;
+    font-size: 36px;
+    font-weight: bold;
+    color: #333;
+}
+
+.form-card form {
+    margin-top: 30px; 
+}
+
+.form-card input[type="text"],
+.form-card input[type="password"] {
+    width: 100%;
+    padding: 15px; 
+    border-radius: 10px; 
+    border: 2px solid #ccc; 
+    margin-bottom: 20px; 
+    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.1); 
+}
+
+.form-card input[type="submit"] {
+    width: 100%;
+    padding: 15px;
+    border-radius: 10px;
+    border: none;
+    background-color: #28a745;
+    color: #fff;
+    cursor: pointer;
+}
+
+.form-card input[type="submit"]:hover {
+    background-color: #218838;
+}
+
+.mssg {
+    margin-top: 20px; 
+    margin-bottom: 20px;
+    border-radius: 10px;
+    padding: 15px;
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.link-container {
+    margin-top: 30px; 
+    text-align: center;
+}
+
+.link-container a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.link-container a:hover {
+    text-decoration: underline;
+}
