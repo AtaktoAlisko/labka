@@ -36,10 +36,10 @@ You need to have installed Node.js, NPM and MongoDB in your System.
 ## Usage
 
 1. **Start the server:**
- nodemon server.js
+
 
    ```bash
-  
+    nodemon server.js
    ```
 
 Code is Running on 
